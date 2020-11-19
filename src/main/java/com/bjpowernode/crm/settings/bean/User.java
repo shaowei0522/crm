@@ -2,6 +2,7 @@ package com.bjpowernode.crm.settings.bean;
 
 import tk.mybatis.mapper.annotation.NameStyle;
 
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
@@ -17,6 +18,7 @@ import javax.persistence.Table;
 @Table(name = "tbl_user")
 @NameStyle
 public class User {
+    @Id
     private String id;//用户id，使用uuid进行生成，保证唯一性
     private String loginAct;//用户的登录名
     private String name;//用户的名字，用来显示在系统页面上

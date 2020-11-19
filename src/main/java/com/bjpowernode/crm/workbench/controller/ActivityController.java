@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,15 +36,17 @@ import java.util.Map;
  * <p>
  * Copyright: Copyright (c) 2020
  */
+
+/*此处可以考虑使用restController*/
 @Controller
 public class ActivityController {
-
     @Autowired
     private ActivityService activityService;
-
     @Autowired
     private UserService userService;
-
+    /**
+     * 查询活动信息，可以根据条件进行查询，分页查询也可以实现
+     * */
     @RequestMapping("/workbench/activity/queryActivity")
     public @ResponseBody PaginationVo
     queryActivity(@RequestParam(defaultValue = "1",required = false) int page,
@@ -52,30 +55,25 @@ public class ActivityController {
 
 //        开启分页功能
         PageHelper.startPage(page, pageSize);
-
         List<Map<String,String>> activityList = activityService.queryAll(activityQueryVo);
-
-
         PageInfo<Map<String,String>> pageInfo = new PageInfo<>(activityList);
-
 //        因为返回的数据要包含分页相关的信息，所以要创建一个自定义的pojo进行查询数据的封装，然后进行返回数据
-
         PaginationVo paginationVo = new PaginationVo(pageInfo);
         System.out.println(paginationVo);
-
         return paginationVo;
     }
-
-
+    /**
+     * 查询所有的User
+     * */
     @RequestMapping("/workbench/activity/queryAllUsers")
     @ResponseBody
     public Object queryAllUsers(){
         List<User> userList = userService.queryAllUsers();
         return userList;
     }
-
-
-
+    /**
+     * 保存添加的活动信息
+     * */
     @RequestMapping("/workbench/activity/saveActivity")
     @ResponseBody
     public Object saveActivity(Activity activity, HttpSession session){
@@ -95,8 +93,62 @@ public class ActivityController {
             resultVo.setOK(false);
             resultVo.setMsg(e.getMessage());
         }
-
 //        将反馈信息返回至前台
         return resultVo;
+    }
+
+    @RequestMapping("/workbench/queryActivityByPrimary")
+    @ResponseBody
+    public Object queryActivityByPrimary(Activity activity){
+//        首先查询所有的用户
+        List<User> userList = userService.queryAllUsers();
+//        其次，查询选中的要修改的活动
+        activity = activityService.queryActivityByPrimary(activity);
+
+//        此处可以考虑使用Map进行数据封装
+        Map<String,Object> map = new HashMap<>();
+        map.put("users", userList);
+        map.put("activity", activity);
+
+        return map;
+    }
+
+    @RequestMapping("/workbench/updateActivity")
+    @ResponseBody
+    public ResultVo updateActivity(Activity activity){
+        ResultVo resultVo = new ResultVo();
+        try {
+            activityService.updateActivity(activity);
+            resultVo.setMsg("数据修改成功！");
+            return resultVo;
+        } catch (Exception e) {
+            resultVo.setMsg(e.getMessage());
+            return resultVo;
+        }
+    }
+    @RequestMapping("/workbench/deleteActivities")
+    @ResponseBody
+    public ResultVo deleteActivities(String ids){
+        ResultVo resultVo = new ResultVo();
+        try {
+            activityService.deleteActivities(ids);
+            resultVo.setOK(true);
+            resultVo.setMsg("删除数据成功！");
+            return resultVo;
+        } catch (Exception e) {
+            resultVo.setMsg(e.getMessage());
+            return resultVo;
+        }
+    }
+
+    /**
+     * 点击超链接后进入该请求，查询市场活动的细节
+     * */
+    @RequestMapping("/workbench/queryActivityDetailById")
+    public String queryActivityDetailById(String id,HttpSession httpSession){
+        Activity activity = activityService.queryActivityDetailById(id);
+
+        httpSession.setAttribute("activity", activity);
+        return "forward:/toView/activity/detail";
     }
 }

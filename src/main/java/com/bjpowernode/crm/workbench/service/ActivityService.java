@@ -20,4 +20,12 @@ public interface ActivityService {
     List<Map<String, String>> queryAll(ActivityQueryVo activityQueryVo);
 
     void saveActivity(Activity activity);
+
+    Activity queryActivityByPrimary(Activity activity);
+
+    void updateActivity(Activity activity);
+
+    void deleteActivities(String ids);
+
+    Activity queryActivityDetailById(String id);
 }

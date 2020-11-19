@@ -15,7 +15,9 @@ public enum ExceptionEnum {
     LOGIN_ACCOUNT_EXPIRE("001","账号已经失效"),
     LOGIN_ACCOUNT_FORBID("001","账号被禁用"),
     LOGIN_ACCOUNT_IP("001", "非法的ip"),
-    ACTIVITY_SAVE("002","添加市场活动失败");
+    ACTIVITY_SAVE("002","添加市场活动失败"),
+    ACTIVITY_UPDATE("002", "修改市场活动失败"),
+    ACTIVITY_DELETE("002","删除数据失败");
 
     ExceptionEnum(String code, String msg) {
         this.code = code;

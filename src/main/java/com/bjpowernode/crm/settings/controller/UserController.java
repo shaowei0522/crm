@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -42,5 +43,15 @@ public class UserController {
             model.addAttribute(CrmConstants.LOGIN_MSG, message);
             return "../../login";
         }
+    }
+
+    /**
+     * 用户退出
+     * */
+    @RequestMapping("/settings/user/logout")
+    public String logout(HttpSession session){
+        session.removeAttribute(CrmConstants.LOGIN_USER);
+        return "../../login";
+
     }
 }

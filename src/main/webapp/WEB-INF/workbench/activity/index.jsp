@@ -107,7 +107,7 @@
 				<div class="modal-body">
 				
 					<form class="form-horizontal" role="form">
-					
+                        <input type="hidden" id="activityId" />
 						<div class="form-group">
 							<label for="edit-marketActivityOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
@@ -119,32 +119,32 @@
 							</div>
                             <label for="edit-marketActivityName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="edit-marketActivityName" value="发传单">
+                                <input type="text" class="form-control" id="edit-marketActivityName">
                             </div>
 						</div>
 
 						<div class="form-group">
 							<label for="edit-startTime" class="col-sm-2 control-label">开始日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-startTime" value="2020-10-10">
+								<input type="text" class="form-control" id="edit-startTime">
 							</div>
 							<label for="edit-endTime" class="col-sm-2 control-label">结束日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-endTime" value="2020-10-20">
+								<input type="text" class="form-control" id="edit-endTime">
 							</div>
 						</div>
 						
 						<div class="form-group">
 							<label for="edit-cost" class="col-sm-2 control-label">成本</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-cost" value="5,000">
+								<input type="text" class="form-control" id="edit-cost">
 							</div>
 						</div>
 						
 						<div class="form-group">
 							<label for="edit-describe" class="col-sm-2 control-label">描述</label>
 							<div class="col-sm-10" style="width: 81%;">
-								<textarea class="form-control" rows="3" id="edit-describe">市场活动Marketing，是指品牌主办或参与的展览会议与公关市场活动，包括自行主办的各类研讨会、客户交流会、演示会、新产品发布会、体验会、答谢会、年会和出席参加并布展或演讲的展览会、研讨会、行业交流会、颁奖典礼等</textarea>
+								<textarea class="form-control" rows="3" id="edit-describe"></textarea>
 							</div>
 						</div>
 						
@@ -153,7 +153,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">更新</button>
+					<button type="button" class="btn btn-primary" id="updateActivity" data-dismiss="modal">更新</button>
 				</div>
 			</div>
 		</div>
@@ -209,8 +209,8 @@
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 5px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
 				  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createActivityModal" id="create_activity"><span class="glyphicon glyphicon-plus"></span> 创建</button>
-				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editActivityModal"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
-				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+				  <button type="button" class="btn btn-default" data-toggle="modal" id="edit-activity"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
+				  <button type="button" class="btn btn-danger" id="deleteActivityBtn"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 				</div>
 				
 			</div>
@@ -271,9 +271,7 @@
 		
 	</div>
 <script>
-
-
-	<%--提交表单--%>
+	<%--提交保存活动的表单--%>
 	$("#saveActivity").click(function () {
 		var serialize = $("#create-activityForm").serialize();
 
@@ -300,8 +298,6 @@
 				$('#create-cost').val("");
 				$('#create-describe').val("");
 				pageList();
-
-
 			}
 		})
 
@@ -329,12 +325,9 @@
 				}
 			}
 		})
-
-
 	});
 	<%--进入页面之后就要进行数据查询--%>
 	pageList(1,2);
-
 	/*
 	* 定义一个函数，pageList，功能就是进行页面的数据展示。
 	* 参数有页数，以及每页的数据的条数。
@@ -361,15 +354,15 @@
 					/*
 					* <tr class="active">
 							<td><input type="checkbox" /></td>
-							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">发传单</a></td>
+							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.jsp';">发传单</a></td>
                             <td>zhangsan</td>
 							<td>2020-10-10</td>
 							<td>2020-10-20</td>
 						</tr>
 					* */
 					//	此处可以对返回的数据进行处理，返回的是一个list集合，其中的元素是一个map集合
-					$("#pageInfo").append("<tr class='active'><td><input type='checkbox' class='son'/></td><td><a style='text-decoration: none; cursor: pointer;'" +
-							"onclick=\"window.location.href='detail.html';\">"+dataList[i].name+"</a></td><td>"+dataList[i].uname+"</td>" +
+					$("#pageInfo").append("<tr class='active'><td><input type='checkbox' class='son' value='"+dataList[i].id+"'/></td><td><a style='text-decoration: none; cursor: pointer;'" +
+							"onclick=\"window.location.href='/crm/workbench/queryActivityDetailById?id="+  dataList[i].id +"'\">"+dataList[i].name+"</a></td><td>"+dataList[i].uname+"</td>" +
 							"<td>"+dataList[i].startDate+"</td><td>"+dataList[i].endDate+"</td>");
 
 				}
@@ -403,7 +396,7 @@
 	$("#startDate").datetimepicker({
 		language:  "zh-CN",
 		format: "yyyy-mm-dd",//显示格式
-		minView: "hour",//设置只显示到月份
+		minView: "month",//设置只显示到月份
 		initialDate: new Date(),//初始化当前日期
 		autoclose: true,//选中自动关闭
 		todayBtn: true, //显示今日按钮
@@ -414,7 +407,7 @@
 	$("#endDate").datetimepicker({
 		language:  "zh-CN",
 		format: "yyyy-mm-dd",//显示格式
-		minView: "hour",//设置只显示到月份
+		minView: "month",//设置只显示到月份
 		initialDate: new Date(),//初始化当前日期
 		autoclose: true,//选中自动关闭
 		todayBtn: true, //显示今日按钮
@@ -425,7 +418,7 @@
 	$("#create-startTime").datetimepicker({
 		language:  "zh-CN",
 		format: "yyyy-mm-dd",//显示格式
-		minView: "hour",//设置只显示到月份
+		minView: "month",//设置只显示到月份
 		initialDate: new Date(),//初始化当前日期
 		autoclose: true,//选中自动关闭
 		todayBtn: true, //显示今日按钮
@@ -436,7 +429,7 @@
 	$("#create-endTime").datetimepicker({
 		language:  "zh-CN",
 		format: "yyyy-mm-dd",//显示格式
-		minView: "hour",//设置只显示到月份
+		minView: "month",//设置只显示到月份
 		initialDate: new Date(),//初始化当前日期
 		autoclose: true,//选中自动关闭
 		todayBtn: true, //显示今日按钮
@@ -447,34 +440,128 @@
 
 	//全选与全不选
 	$(".father").click(function () {
-		alert($(this).prop("checked"));
 		$(".son").prop("checked",$(this).prop('checked'));
 	});
-
-
-
-
 
 	setTimeout(function () {
 		$(".son").each(function(){
 			$(this).click(function () {
-				alert(111);
-				/*		var length = $(".son").length;
-                        //表单对象属性过滤
-                        var checkedLeng = $(".son:checked").length;
-                        alert(length);
-                        alert(checkedLeng);
-
-                        if (checkedLeng == length) {
-                            $(".father").prop("checked", true);
-                        } else {
-                            $(".father").prop("checked", false);
-                        }*/
+                var length = $(".son").length;
+                //表单对象属性过滤
+                var checkedLeng = $(".son:checked").length;
+                if (checkedLeng == length) {
+                    $(".father").prop("checked", true);
+                } else {
+                    $(".father").prop("checked", false);
+                }
 			});
-
 		});
-
 	})
+
+
+
+    /*
+    *
+    * 点击修改按钮，进行数据回显
+    * 此处不能使用data-target，因为只有在满足条件的情况下才可以弹出模态窗口
+    * */
+    $('#edit-activity').bind('click',function () {
+    //    此处需要进行checkbox的判断，只能选择一个checkbox
+        if ($('.son:checked').length > 1) {
+            alert("只能选择一条数据！");
+        }else if ($('.son:checked').length == 0) {
+            alert("至少选择一条数据进行修改！");
+        } else {
+            //模态窗口进行手动显示
+            $("#editActivityModal").modal("show");
+            alert($('.son:checked').val());
+        //    获取被选择的数据的主键进行查询，（查询活动数据以及owner的姓名，考虑查询两次返回一个集合）
+            $.ajax({
+                url:"/crm/workbench/queryActivityByPrimary",
+                data:{
+                    'id':$('.son:checked').val()
+                },
+                dataType:"json",
+                type:"get",
+                success:function (data) {
+                //    此处返回的是封装好的数据
+                //    对下拉列表进行拼接
+                    for (var i = 0; i < data.users.length; i++) {
+                        $("#edit-marketActivityOwner").append("<option value='"+data.users[i].id+"'>" +
+                            data.users[i].name+"</option>");
+                    }
+                    //对模态窗口的数据进行赋值
+                    $('#edit-marketActivityName').val(data.activity.name);
+                    $('#edit-startTime').val(data.activity.startDate);
+                    $('#edit-endTime').val(data.activity.endDate);
+                    $('#edit-cost').val(data.activity.cost);
+                    $('#edit-describe').val(data.activity.description);
+
+                    //作为隐藏域的value，主要用于主键更新数据
+                    $("#activityId").val(data.activity.id);
+                //    至此，模态窗口的数据已经拼接成功
+                }
+            })
+
+        }
+    });
+
+    //此处进行修改活动的数据的提交
+    $('#updateActivity').click(function () {
+
+        $.ajax({
+            url:"/crm/workbench/updateActivity",
+            data:{
+                //根据主键进行更新
+                'id' : $('#activityId').val(),
+                //此处select标签的val就是option的value
+                'owner' : $('#edit-marketActivityOwner').val(),
+                'name' : $('#edit-marketActivityName').val(),
+                'startDate' : $('#edit-startTime').val(),
+                'endDate' : $('#edit-endTime').val(),
+                'cost' : $('#edit-cost').val(),
+                'description' : $('#edit-describe').val(),
+            },
+            dataType:"json",
+            type:"get",
+            success:function (data) {
+            //    此处接收处理结果，更新成功还是更新失败
+                alert(data.msg);
+            //    重新查询页面
+                pageList();
+            }
+        })
+
+    });
+
+//    此处进行数据的删除
+    $("#deleteActivityBtn").bind("click",function () {
+        var array = [];
+        if ($('.son:checked').length == 0) {
+            alert("请您选择要删除的数据！！！");
+        } else {
+        //    对选中的数据进行删除
+            $('.son:checked').each(function () {
+                array.push($(this).val());
+            })
+        //    向后台发送请求，删除数据，根据主键进行删除，checkbox中存放了主键
+            $.ajax({
+                url: "/crm/workbench/deleteActivities?ids=" + array.join(","),
+                dataType:"json",
+                data:{
+
+                },
+                type:"get",
+                success:function (data) {
+                //    此处返回处理结果
+                    alert(data.msg);
+                    pageList();
+                }
+            })
+
+        }
+    });
+
 
 
 </script>
