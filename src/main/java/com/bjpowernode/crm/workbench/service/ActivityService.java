@@ -2,6 +2,7 @@ package com.bjpowernode.crm.workbench.service;
 
 import com.bjpowernode.crm.workbench.bean.Activity;
 import com.bjpowernode.crm.workbench.bean.ActivityQueryVo;
+import com.bjpowernode.crm.workbench.bean.ActivityRemark;
 
 import java.util.List;
 import java.util.Map;
@@ -28,4 +29,12 @@ public interface ActivityService {
     void deleteActivities(String ids);
 
     Activity queryActivityDetailById(String id);
+
+    void updateActivityRemark(ActivityRemark activityRemark);
+
+    void deleteActivityRemarkByPrimaryKey(ActivityRemark activityRemark);
+
+    void addActivityRemark(ActivityRemark activityRemark);
+
+    void deleteActivityDetail(String id);
 }

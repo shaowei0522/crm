@@ -3,20 +3,18 @@ package com.bjpowernode.crm.workbench.controller;
 import com.bjpowernode.crm.base.bean.PaginationVo;
 import com.bjpowernode.crm.base.bean.ResultVo;
 import com.bjpowernode.crm.base.constants.CrmConstants;
-import com.bjpowernode.crm.base.exception.CrmException;
 import com.bjpowernode.crm.base.util.DateTimeUtil;
 import com.bjpowernode.crm.base.util.UUIDUtil;
 import com.bjpowernode.crm.settings.bean.User;
 import com.bjpowernode.crm.settings.service.UserService;
 import com.bjpowernode.crm.workbench.bean.Activity;
 import com.bjpowernode.crm.workbench.bean.ActivityQueryVo;
+import com.bjpowernode.crm.workbench.bean.ActivityRemark;
 import com.bjpowernode.crm.workbench.service.ActivityService;
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -150,5 +148,92 @@ public class ActivityController {
 
         httpSession.setAttribute("activity", activity);
         return "forward:/toView/activity/detail";
+    }
+
+    /**
+     * 修改活动备注
+     * */
+    @RequestMapping("/workbench/updateActivityRemark")
+    @ResponseBody
+    public ResultVo updateActivityRemark(ActivityRemark activityRemark,HttpSession session){
+        ResultVo resultVo = new ResultVo();
+        User user = (User) session.getAttribute(CrmConstants.LOGIN_USER);
+        if (user != null) {
+            activityRemark.setEditBy(user.getName());
+        }
+        try {
+            activityService.updateActivityRemark(activityRemark);
+            resultVo.setOK(true);
+            resultVo.setMsg("修改成功");
+            return resultVo;
+        } catch (Exception e) {
+
+            resultVo.setMsg(e.getMessage());
+            return resultVo;
+        }
+    }
+
+    /**
+     * 删除活动备注
+     */
+    @RequestMapping("/workbench/deleteActivityRemarkByPrimaryKey")
+    @ResponseBody
+    public ResultVo deleteActivityRemarkByPrimaryKey(ActivityRemark activityRemark) {
+        ResultVo resultVo = new ResultVo();
+        try {
+            activityService.deleteActivityRemarkByPrimaryKey(activityRemark);
+            resultVo.setOK(true);
+            resultVo.setMsg("删除成功！");
+            return resultVo;
+        } catch (Exception e) {
+            resultVo.setMsg(e.getMessage());
+            return resultVo;
+        }
+    }
+
+    /**
+     * 添加备注
+     * */
+    @RequestMapping("/workbench/addActivityRemark")
+    @ResponseBody
+    public Map<String,Object> addActivityRemark(ActivityRemark activityRemark,HttpSession httpSession){
+        Map<String,Object> stringObjectMap = new HashMap<>();
+        ResultVo resultVo = new ResultVo();
+        User user = (User) httpSession.getAttribute(CrmConstants.LOGIN_USER);
+        activityRemark.setCreateBy(user.getName());
+        activityRemark.setEditBy(user.getName());
+        activityRemark.setCreateTime(DateTimeUtil.getSysTime());
+        activityRemark.setEditTime(DateTimeUtil.getSysTime());
+        activityRemark.setId(UUIDUtil.getUUID());
+        activityRemark.setEditFlag("0");
+        stringObjectMap.put("activityRemark", activityRemark);
+        try {
+            activityService.addActivityRemark(activityRemark);
+            resultVo.setOK(true);
+            resultVo.setMsg("添加成功！");
+            stringObjectMap.put("resultVo", resultVo);
+            return stringObjectMap;
+        } catch (Exception e) {
+            resultVo.setMsg(e.getMessage());
+            stringObjectMap.put("resultVo", resultVo);
+            return stringObjectMap;
+        }
+    }
+
+    /**
+     * 删除整个活动，包括备注信息
+     * */
+    @RequestMapping("/workbench/deleteActivityDetail")
+    public String deleteActivityDetail(String activityId){
+        try {
+            activityService.deleteActivityDetail(activityId);
+            return "forward:/toView/activity/index";
+        } catch (Exception e) {
+            return "../../error";
+        }
+
+
+
+
     }
 }

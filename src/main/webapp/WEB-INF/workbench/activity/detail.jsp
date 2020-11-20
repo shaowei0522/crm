@@ -162,7 +162,7 @@
 		</div>
 		<div style="position: relative; height: 50px; width: 250px;  top: -72px; left: 700px;">
 			<button type="button" class="btn btn-default" data-toggle="modal" data-target="#editActivityModal"><span class="glyphicon glyphicon-edit"></span> 编辑</button>
-			<button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+			<button type="button" class="btn btn-danger" id="deleteActivityDetail"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 		</div>
 	</div>
 	
@@ -213,35 +213,36 @@
 	
 	<!-- 备注 -->
 	<div style="position: relative; top: 30px; left: 40px;">
-		<div class="page-header">
+		<div class="page-header" >
 			<h4>备注</h4>
 		</div>
 
         <c:forEach items="${activity.activityRemarkList}" var="activityRemark">
             <!-- 备注1 -->
-            <div class="remarkDiv" style="height: 60px;">
-                <img title="zhangsan" src="/crm/image/user-thumbnail.png" style="width: 30px; height:30px;">
+            <div class="remarkDiv" style="height: 60px;" id="${activityRemark.id}">
+                <img title="${activityRemark.createBy}" src="/crm/image/user-thumbnail.png" style="width: 30px; height:30px;">
                 <div style="position: relative; top: -40px; left: 40px;" >
-                    <h5>${activityRemark.noteContent}</h5>
+                    <h5 id="activityRemarkNote">${activityRemark.noteContent}</h5>
                     <font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> <small style="color: gray;"> ${activityRemark.createTime} 由${activityRemark.createBy}</small>
                     <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-                        <a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
+                        <a class="myHref" href="javascript:void(0);" onclick="editActivityRemark('${activityRemark.id}','${activityRemark.noteContent}')"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
                         &nbsp;&nbsp;&nbsp;&nbsp;
-                        <a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
+                        <a class="myHref" href="javascript:void(0);" onclick="deleteActivityRemark('${activityRemark.id}')"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
                     </div>
                 </div>
             </div>
 
         </c:forEach>
+        <div id="activityRemarkEnd"></div>
 
 
-		
+		<%--添加备注--%>
 		<div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
 			<form role="form" style="position: relative;top: 10px; left: 10px;">
 				<textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="添加备注..."></textarea>
 				<p id="cancelAndSaveBtn" style="position: relative;left: 737px; top: 10px; display: none;">
 					<button id="cancelBtn" type="button" class="btn btn-default">取消</button>
-					<button type="button" class="btn btn-primary">保存</button>
+					<button type="button" class="btn btn-primary" id="addActivityRemark">保存</button>
 				</p>
 			</form>
 		</div>
@@ -250,5 +251,110 @@
 </body>
 
 <script>
+    <%--点击备注的修改按钮，弹出一个模态窗口，数据是不经过后台请求的--%>
+    function editActivityRemark(activityId,activityContent) {
+        //对模态窗口中的数据进行拼接
+        $('#noteContent').html(activityContent);
+        $('#remarkId').val(activityId);
+
+        $("#editRemarkModal").modal('show');
+
+    }
+//    更新按钮，修改备注信息
+    $('#updateRemarkBtn').bind("click",function () {
+    //    向后台发送请求，修改数据
+        $.ajax({
+            url:"/crm/workbench/updateActivityRemark",
+            dataType:"json",
+            data:{
+                //注意，此处要使用val()，不能使用html()，否则获取到的是之前的数据，不是用户输入的数据
+                "noteContent":$('#noteContent').val(),
+                "id":$('#remarkId').val(),
+            },
+            type:"get",
+            success:function (data) {
+            //    提示信息
+                alert(data.msg);
+                console.log(data);
+                if (data.oK) {
+                //    此处代表用户修改备注成功
+                //    关闭模态窗口
+                    $("#editRemarkModal").modal('hide');
+                //    更新前端显示的数据
+                    $('#noteContent').html($('#noteContent').val());
+                //    修改拼接的数据的val
+                    $("#activityRemarkNote").html($('#noteContent').val());
+                }
+            }
+        })
+    });
+
+//    删除数据
+    function deleteActivityRemark(activityId) {
+        var isDelete = confirm("确定要删除该条备注吗？");
+        if (isDelete) {
+            //    首先后台数据库要删除数据
+            $.ajax({
+                url:"/crm/workbench/deleteActivityRemarkByPrimaryKey",
+                dataType:"json",
+                data:{
+                    "id":activityId,
+                },
+                type:"get",
+                success:function (data) {
+                    //后台的数据删除成功了，前台进行js删除，此处之所以要使用js，
+                    // 不使用jquery，是因为activityId在jQuery的id选择器中无法获取
+                    if (data.oK) {
+                        document.getElementById(activityId).remove();
+                    }
+                }
+            });
+        }
+    }
+
+//    添加备注
+    $("#addActivityRemark").bind("click",function () {
+        var val = $('#remark').val();
+    //    向后台发送请求，添加数据，此处需要一个外键，就是activity的主键
+        $.ajax({
+            url:"/crm/workbench/addActivityRemark",
+            dataType:"json",
+            data:{
+                "activityId":'${sessionScope.activity.id}',
+                "noteContent":val
+            },
+            type:"get",
+            success: function (data) {
+                if (data.resultVo.oK) {
+                //    前台进行页面的更新
+                    $('#activityRemarkEnd').after("<div class=\"remarkDiv\" style=\"height: 60px;\" id='"+data.activityRemark.id+"'>\n" +
+                        "                <img title=\""+data.activityRemark.createBy+"\" src=\"/crm/image/user-thumbnail.png\" style=\"width: 30px; height:30px;\">\n" +
+                        "                <div style=\"position: relative; top: -40px; left: 40px;\" >\n" +
+                        "                    <h5 id=\"activityRemarkNote\">"+data.activityRemark.noteContent+"</h5>\n" +
+                        "                    <font color=\"gray\">市场活动</font> <font color=\"gray\">-</font> <b>${activity.name}</b> <small style=\"color: gray;\">"+data.activityRemark.createTime+" 由"+data.activityRemark.createBy+"</small>\n" +
+                        "                    <div style=\"position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;\">\n" +
+                        "                        <a class=\"myHref\" href=\"javascript:void(0);\" onclick=\"editActivityRemark('"+data.activityRemark.id+"','"+data.activityRemark.noteContent+"')\"><span class=\"glyphicon glyphicon-edit\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>&nbsp;&nbsp;&nbsp;&nbsp;<a class=\"myHref\" href=\"javascript:void(0);\" onclick=\"deleteActivityRemark('"+data.activityRemark.id+"')\"><span class=\"glyphicon glyphicon-remove\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>\n" +
+                        "                    </div>\n" +
+                        "                </div>\n" +
+                        "            </div>");
+
+                    $('#remark').val("");
+                }
+
+            }
+        });
+
+
+    });
+
+    /*删除整个活动，包括活动的备注，之后跳转到市场活动页面*/
+    $('#deleteActivityDetail').click(function () {
+        var b = confirm("您确定要删除该活动吗？");
+        if (b) {
+            window.location.href = "/crm/workbench/deleteActivityDetail?activityId=${activity.id}";
+
+        }
+    });
+
 </script>
 </html>

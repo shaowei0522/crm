@@ -2,6 +2,7 @@ package com.bjpowernode.crm.workbench.service.impl;
 
 import com.bjpowernode.crm.base.constants.ExceptionEnum;
 import com.bjpowernode.crm.base.exception.CrmException;
+import com.bjpowernode.crm.base.util.DateTimeUtil;
 import com.bjpowernode.crm.settings.bean.User;
 import com.bjpowernode.crm.settings.mapper.UserMapper;
 import com.bjpowernode.crm.workbench.bean.Activity;
@@ -94,6 +95,49 @@ public class ActivityServiceImpl implements ActivityService {
 
 
         return activity;
+    }
+
+    @Override
+    public void updateActivityRemark(ActivityRemark activityRemark) {
+        activityRemark.setEditFlag("1");
+        activityRemark.setEditTime(DateTimeUtil.getSysTime());
+
+        int i = activityRemarkMapper.updateByPrimaryKeySelective(activityRemark);
+        if (i == 0) {
+            throw new CrmException(ExceptionEnum.ACTIVITY_REMARK_UPDATE);
+        }
+    }
+
+    @Override
+    public void deleteActivityRemarkByPrimaryKey(ActivityRemark activityRemark) {
+        int i = activityRemarkMapper.deleteByPrimaryKey(activityRemark);
+        if (i == 0) {
+            throw new CrmException(ExceptionEnum.ACTIVITY_REMARK_DELETE);
+        }
+    }
+
+    @Override
+    public void addActivityRemark(ActivityRemark activityRemark) {
+        int i = activityRemarkMapper.insertSelective(activityRemark);
+        if (i == 0) {
+            throw new CrmException(ExceptionEnum.ACTIVITY_REMARK_ADD);
+        }
+    }
+
+    @Override
+    public void deleteActivityDetail(String id) {
+        ActivityRemark activityRemark = new ActivityRemark();
+        activityRemark.setActivityId(id);
+//        该方法很危险，如果activityRemark的所有属性都为空，会删除所有的数据！！！！！
+        int i1 = activityRemarkMapper.delete(activityRemark);
+        if (i1 == 0) {
+            throw new CrmException(ExceptionEnum.ACTIVITY_ALL_DELETE);
+        }
+        int i = activityMapper.deleteByPrimaryKey(id);
+        if (i == 0) {
+            throw new CrmException(ExceptionEnum.ACTIVITY_ALL_DELETE);
+        }
+
     }
 
 }

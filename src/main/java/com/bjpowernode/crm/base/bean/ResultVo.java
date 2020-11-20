@@ -12,6 +12,7 @@ package com.bjpowernode.crm.base.bean;
  */
 public class ResultVo {
 
+//    此处的isOK有小bug
     private boolean isOK;
 
     private String msg;
