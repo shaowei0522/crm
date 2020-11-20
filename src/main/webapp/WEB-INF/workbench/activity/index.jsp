@@ -87,7 +87,7 @@
 					
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-default" id="discardActivity" data-dismiss="modal">关闭</button>
 					<button type="button" class="btn btn-primary" id="saveActivity">保存</button>
 				</div>
 			</div>
@@ -291,12 +291,8 @@
 				$('#createActivityModal').modal('hide');
 
 				//对模态窗口的数据进行清空
-				$('#create-marketActivityOwner').val("");
-				$('#create-marketActivityName').val("");
-				$('#create-startTime').val("");
-				$('#create-endTime').val("");
-				$('#create-cost').val("");
-				$('#create-describe').val("");
+				// $('#create-marketActivityOwner').val("");
+				clearCreateModal();
 				pageList();
 			}
 		})
@@ -472,9 +468,12 @@
         }else if ($('.son:checked').length == 0) {
             alert("至少选择一条数据进行修改！");
         } else {
+
+			//对模态窗口的数据进行清空
+			clearEditModal();
+
             //模态窗口进行手动显示
             $("#editActivityModal").modal("show");
-            alert($('.son:checked').val());
         //    获取被选择的数据的主键进行查询，（查询活动数据以及owner的姓名，考虑查询两次返回一个集合）
             $.ajax({
                 url:"/crm/workbench/queryActivityByPrimary",
@@ -490,6 +489,13 @@
                         $("#edit-marketActivityOwner").append("<option value='"+data.users[i].id+"'>" +
                             data.users[i].name+"</option>");
                     }
+                    //选中该条数据所属的所有者
+					var owner = data.activity.owner;
+					$("#edit-marketActivityOwner option").each(function () {
+						if (owner == $(this).val()) {
+							$(this).prop("selected", true);
+						}
+					});
                     //对模态窗口的数据进行赋值
                     $('#edit-marketActivityName').val(data.activity.name);
                     $('#edit-startTime').val(data.activity.startDate);
@@ -562,7 +568,34 @@
         }
     });
 
+    /**
+	 * 点击关闭用来添加数据的模态窗口，清空之前输入的数据
+	 * */
+    $('#discardActivity').click(function () {
+		clearCreateModal();
+	});
 
+    /**
+	 * 清空添加数据的模态窗口
+	 * */
+    function clearCreateModal() {
+		$('#create-marketActivityName').val("");
+		$('#create-startTime').val("");
+		$('#create-endTime').val("");
+		$('#create-cost').val("");
+		$('#create-describe').val("");
+	}
+	/**
+	 * 清空修改数据的模态窗口
+	 * */
+	function clearEditModal() {
+		$('#edit-marketActivityOwner').empty();
+		$('#edit-marketActivityName').val("");
+		$('#edit-startTime').val("");
+		$('#edit-endTime').val("");
+		$('#edit-cost').val("");
+		$('#edit-describe').val("");
+	}
 
 </script>
 </body>
