@@ -4,13 +4,13 @@
 <head>
 <meta charset="UTF-8">
 
-<link href="../../jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
-<link href="../../jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
+<link href="/crm/jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+<link href="/crm/jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
 
-<script type="text/javascript" src="../../jquery/jquery-1.11.1-min.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript" src="/crm/jquery/jquery-1.11.1-min.js"></script>
+<script type="text/javascript" src="/crm/jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/crm/jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="/crm/jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
 
 <script type="text/javascript">
 
@@ -35,79 +35,64 @@
 					<h4 class="modal-title" id="myModalLabel">创建线索</h4>
 				</div>
 				<div class="modal-body">
-					<form class="form-horizontal" role="form">
+					<form class="form-horizontal" role="form" id="addClue_form">
 					
 						<div class="form-group">
 							<label for="create-clueOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
-								<select class="form-control" id="create-clueOwner">
-								  <option>zhangsan</option>
-								  <option>lisi</option>
-								  <option>wangwu</option>
+								<select class="form-control" id="create-clueOwner" name="owner">
 								</select>
 							</div>
 							<label for="create-company" class="col-sm-2 control-label">公司<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="create-company">
+								<input type="text" class="form-control" id="create-company" name="company">
 							</div>
 						</div>
 						
 						<div class="form-group">
 							<label for="create-call" class="col-sm-2 control-label">称呼</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<select class="form-control" id="create-call">
+								<select class="form-control" id="create-call" name="appellation">
 								  <option></option>
-								  <option>先生</option>
-								  <option>夫人</option>
-								  <option>女士</option>
-								  <option>博士</option>
-								  <option>教授</option>
 								</select>
 							</div>
 							<label for="create-surname" class="col-sm-2 control-label">姓名<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="create-surname">
+								<input type="text" class="form-control" id="create-surname" name="fullname">
 							</div>
 						</div>
 						
 						<div class="form-group">
 							<label for="create-job" class="col-sm-2 control-label">职位</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="create-job">
+								<input type="text" class="form-control" id="create-job" name="job">
 							</div>
 							<label for="create-email" class="col-sm-2 control-label">邮箱</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="create-email">
+								<input type="text" class="form-control" id="create-email" name="email">
 							</div>
 						</div>
 						
 						<div class="form-group">
 							<label for="create-phone" class="col-sm-2 control-label">公司座机</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="create-phone">
+								<input type="text" class="form-control" id="create-phone" name="phone">
 							</div>
 							<label for="create-website" class="col-sm-2 control-label">公司网站</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="create-website">
+								<input type="text" class="form-control" id="create-website" name="website">
 							</div>
 						</div>
 						
 						<div class="form-group">
 							<label for="create-mphone" class="col-sm-2 control-label">手机</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="create-mphone">
+								<input type="text" class="form-control" id="create-mphone" name="mphone">
 							</div>
 							<label for="create-status" class="col-sm-2 control-label">线索状态</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<select class="form-control" id="create-status">
+								<select class="form-control" id="create-status" name="state">
 								  <option></option>
-								  <option>试图联系</option>
-								  <option>将来联系</option>
-								  <option>已联系</option>
-								  <option>虚假线索</option>
-								  <option>丢失线索</option>
-								  <option>未联系</option>
-								  <option>需要条件</option>
 								</select>
 							</div>
 						</div>
@@ -115,22 +100,8 @@
 						<div class="form-group">
 							<label for="create-source" class="col-sm-2 control-label">线索来源</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<select class="form-control" id="create-source">
+								<select class="form-control" id="create-source" name="source">
 								  <option></option>
-								  <option>广告</option>
-								  <option>推销电话</option>
-								  <option>员工介绍</option>
-								  <option>外部介绍</option>
-								  <option>在线商场</option>
-								  <option>合作伙伴</option>
-								  <option>公开媒介</option>
-								  <option>销售邮件</option>
-								  <option>合作伙伴研讨会</option>
-								  <option>内部研讨会</option>
-								  <option>交易会</option>
-								  <option>web下载</option>
-								  <option>web调研</option>
-								  <option>聊天</option>
 								</select>
 							</div>
 						</div>
@@ -139,7 +110,7 @@
 						<div class="form-group">
 							<label for="create-describe" class="col-sm-2 control-label">线索描述</label>
 							<div class="col-sm-10" style="width: 81%;">
-								<textarea class="form-control" rows="3" id="create-describe"></textarea>
+								<textarea class="form-control" rows="3" id="create-describe" name="description"></textarea>
 							</div>
 						</div>
 						
@@ -149,13 +120,13 @@
 							<div class="form-group">
 								<label for="create-contactSummary" class="col-sm-2 control-label">联系纪要</label>
 								<div class="col-sm-10" style="width: 81%;">
-									<textarea class="form-control" rows="3" id="create-contactSummary"></textarea>
+									<textarea class="form-control" rows="3" id="create-contactSummary" name="contactSummary"></textarea>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="create-nextContactTime" class="col-sm-2 control-label">下次联系时间</label>
 								<div class="col-sm-10" style="width: 300px;">
-									<input type="text" class="form-control" id="create-nextContactTime">
+									<input type="text" class="form-control" id="create-nextContactTime" name="nextContactTime">
 								</div>
 							</div>
 						</div>
@@ -166,7 +137,7 @@
 							<div class="form-group">
                                 <label for="create-address" class="col-sm-2 control-label">详细地址</label>
                                 <div class="col-sm-10" style="width: 81%;">
-                                    <textarea class="form-control" rows="1" id="create-address"></textarea>
+                                    <textarea class="form-control" rows="1" id="create-address" name="address"></textarea>
                                 </div>
 							</div>
 						</div>
@@ -175,7 +146,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">保存</button>
+					<button type="button" class="btn btn-primary" id="saveClue" data-dismiss="modal">保存</button>
 				</div>
 			</div>
 		</div>
@@ -439,7 +410,7 @@
 			</div>
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 40px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
-				  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createClueModal"><span class="glyphicon glyphicon-plus"></span> 创建</button>
+				  <button type="button" class="btn btn-primary" data-toggle="modal" id="createClue" data-target="#createClueModal"><span class="glyphicon glyphicon-plus"></span> 创建</button>
 				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editClueModal"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
 				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 				</div>
@@ -524,4 +495,85 @@
 		
 	</div>
 </body>
+
+<script>
+	<%--点击创建按钮弹出模态窗口，此时还需要进行数据查询进行页面展示--%>
+	$('#createClue').click(function () {
+		$('#create-clueOwner').empty();
+		$('#create-call').empty();
+		$('#create-status').empty();
+		$('#create-source').empty();
+	//	此处先查询所有的用户，进行所有者的拼接
+		$.ajax({
+			url:"/crm/workbench/activity/queryAllUsers",
+			dataType:"json",
+			data:{},
+			type:"get",
+			success:function (data) {
+				//此处返回的数据是一个user集合
+				for (var i = 0; i < data.length; i++) {
+					$('#create-clueOwner').append("<option value = '"+ data[i].id+"'>"+data[i].name+"</option>");
+				}
+			}
+		});
+	//	此处查询数据词典，拼接线索状态与线索来源
+		$.ajax({
+			url:"/crm/dictionaryCache",
+			dataType:"json",
+			data:{},
+			type:"get",
+			success:function (data) {
+				console.log(data);
+			//	此处返回的数据是dictionaryType集合
+				for (var i = 0; i < data.length; i++) {
+					var valueList = data[i].dictionaryValueList;
+					for (var j = 0; j < valueList.length; j++) {
+						if (data[i].code == 'appellation') {
+							$('#create-call').append("<option value = '"+valueList[j].value+"'>"+valueList[j].text+"</option>");
+						}
+						if("clueState" == data[i].code){
+							$('#create-status')
+									.append("<option value="+valueList[j].value+">"+valueList[j].text+"</option>");
+						}
+						if("source" == data[i].code){
+							$('#create-source')
+									.append("<option value="+valueList[j].value+">"+valueList[j].text+"</option>");
+						}
+					}
+				}
+			}
+		})
+	});
+
+//	点击保存按钮的同时进行数据的数据库插入
+	$('#saveClue').bind("click",function () {
+		var serialize = $('#addClue_form').serialize();
+		alert(serialize);
+		$.ajax({
+			url:"/crm/workbench/addClue",
+			dataType:"json",
+			data:serialize,
+			type:"get",
+			success:function (data) {
+				alert(data.msg);
+			//	对模态窗口中的内容进行表单重置
+				$('#addClue_form')[0].reset();
+
+
+			}
+		})
+
+	});
+	//创建线索模态窗口日历插件
+	$("#create-nextContactTime").datetimepicker({
+		language:  "zh-CN",
+		format: "yyyy-mm-dd",//显示格式
+		minView: "month",//设置只显示到月份
+		initialDate: new Date(),//初始化当前日期
+		autoclose: true,//选中自动关闭
+		todayBtn: true, //显示今日按钮
+		clearBtn : true,
+		pickerPosition: "bottom-left"
+	});
+</script>
 </html>
