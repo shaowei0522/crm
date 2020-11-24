@@ -1,6 +1,9 @@
 package com.bjpowernode.crm.workbench.service;
 
 import com.bjpowernode.crm.workbench.bean.Clue;
+import com.bjpowernode.crm.workbench.bean.ClueRemark;
+
+import java.util.List;
 
 /**
  * @ProjectName: crm
@@ -14,4 +17,12 @@ import com.bjpowernode.crm.workbench.bean.Clue;
  */
 public interface ClueService {
     void addClue(Clue clue);
+
+    List<Clue> queryAllClues();
+
+    Clue queryClueDetail(String id);
+
+    void deleteClueRemark(String id);
+
+    void updateClueRemark(ClueRemark clueRemark);
 }

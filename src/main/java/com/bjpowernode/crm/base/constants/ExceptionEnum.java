@@ -22,7 +22,9 @@ public enum ExceptionEnum {
     ACTIVITY_REMARK_DELETE("002","删除备注信息失败"),
     ACTIVITY_REMARK_ADD("002","添加备注信息失败"),
     ACTIVITY_ALL_DELETE("002","删除市场活动以及备注失败"),
-    CLUE_ADD("003","添加线索失败");
+    CLUE_ADD("003","添加线索失败"),
+    CLUE_REMARK_DELETE("003","删除线索备注失败"),
+    CLUE_REMARK_UPDATE("003","修改线索备注失败");
 
     ExceptionEnum(String code, String msg) {
         this.code = code;

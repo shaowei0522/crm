@@ -12,6 +12,11 @@
 <script type="text/javascript" src="/crm/jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript" src="/crm/jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
 
+<%--导入分页插件--%>
+<link type="text/css" rel="stylesheet" href="/crm/jquery/bs_pagination/jquery.bs_pagination.min.css"/>
+<script type="text/javascript" src="/crm/jquery/bs_pagination/jquery.bs_pagination.min.js"></script>
+<script type="text/javascript" src="/crm/jquery/bs_pagination/en.js"></script>
+
 <script type="text/javascript">
 
 	$(function(){
@@ -431,33 +436,15 @@
 							<td>线索状态</td>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
-							<td><input type="checkbox" /></td>
-							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">李四先生</a></td>
-							<td>动力节点</td>
-							<td>010-84846003</td>
-							<td>12345678901</td>
-							<td>广告</td>
-							<td>zhangsan</td>
-							<td>已联系</td>
-						</tr>
-                        <tr class="active">
-                            <td><input type="checkbox" /></td>
-                            <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">李四先生</a></td>
-                            <td>动力节点</td>
-                            <td>010-84846003</td>
-                            <td>12345678901</td>
-                            <td>广告</td>
-                            <td>zhangsan</td>
-                            <td>已联系</td>
-                        </tr>
+					<tbody id="clueInfo">
 					</tbody>
 				</table>
 			</div>
 			
 			<div style="height: 50px; position: relative;top: 60px;">
-				<div>
+                <div id="activityPage"></div>
+
+            <%--				<div>
 					<button type="button" class="btn btn-default" style="cursor: default;">共<b>50</b>条记录</button>
 				</div>
 				<div class="btn-group" style="position: relative;top: -34px; left: 110px;">
@@ -488,7 +475,7 @@
 							<li class="disabled"><a href="#">末页</a></li>
 						</ul>
 					</nav>
-				</div>
+				</div>--%>
 			</div>
 			
 		</div>
@@ -497,6 +484,59 @@
 </body>
 
 <script>
+	/*首次进入该页面，需要进行线索的数据的查询以及分页*/
+	pageList();
+	function pageList(page,pageSize){
+		$.ajax({
+			url:"/crm/workbench/clue/queryAllClues",
+			dataType:"json",
+			data:{
+				"page":page,
+				"pageSize":pageSize
+			},
+			type:"get",
+			success:function (data) {
+				//对之前的数据进行清空
+				$('#clueInfo').html("");
+				//    查询出来的线索数据进行拼接展示，分页
+				var clueList = data.list;
+				for (var i = 0; i < clueList.length; i++) {
+					$('#clueInfo').append("<tr>\n" +
+							"\t\t\t\t\t\t\t<td><input type=\"checkbox\" /></td>\n" +
+							"\t\t\t\t\t\t\t<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='/crm/workbench/clue/queryClueDetail?id="+clueList[i].id+"';\">"+clueList[i].fullname + clueList[i].appellation+"</a></td>\n" +
+							"\t\t\t\t\t\t\t<td>"+clueList[i].company+"</td>\n" +
+							"\t\t\t\t\t\t\t<td>"+clueList[i].mphone+"</td>\n" +
+							"\t\t\t\t\t\t\t<td>"+clueList[i].phone+"</td>\n" +
+							"\t\t\t\t\t\t\t<td>"+clueList[i].source+"</td>\n" +
+							"\t\t\t\t\t\t\t<td>"+clueList[i].owner+"</td>\n" +
+							"\t\t\t\t\t\t\t<td>"+clueList[i].state+"</td>\n" +
+							"\t\t\t\t\t\t</tr>");
+				}
+				//  此处对分页进行拼接，需要使用提供的分页插件，引入相关的js以及css样式
+				$("#activityPage").bs_pagination({
+					currentPage: data.page, // 页码
+					rowsPerPage: data.pageSize, // 每页显示的记录条数
+					maxRowsPerPage: 20, // 每页最多显示的记录条数
+					totalPages: data.pages, // 总页数
+					totalRows: data.total, // 总记录条数
+					visiblePageLinks: 3, // 显示几个卡片
+					showGoToPage: true,
+					showRowsPerPage: true,
+					showRowsInfo: true,
+					showRowsDefaultInfo: true,
+					//回调函数，用户每次点击分页插件进行翻页的时候就会触发该函数
+					onChangePage : function(event, obj){
+
+						//刷新页面，obj.currentPage:当前点击的页码
+						pageList(obj.currentPage,obj.rowsPerPage);
+					}
+				});
+
+			}
+		});
+
+	}
+
 	<%--点击创建按钮弹出模态窗口，此时还需要进行数据查询进行页面展示--%>
 	$('#createClue').click(function () {
 		$('#create-clueOwner').empty();
