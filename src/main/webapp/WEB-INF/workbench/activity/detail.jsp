@@ -222,7 +222,7 @@
             <div class="remarkDiv" style="height: 60px;" id="${activityRemark.id}">
                 <img title="${activityRemark.createBy}" src="/crm/image/user-thumbnail.png" style="width: 30px; height:30px;">
                 <div style="position: relative; top: -40px; left: 40px;" >
-                    <h5 id="activityRemarkNote">${activityRemark.noteContent}</h5>
+                    <h5 id="activityRemarkNote${activityRemark.id}">${activityRemark.noteContent}</h5>
                     <font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> <small style="color: gray;"> ${activityRemark.createTime} 由${activityRemark.createBy}</small>
                     <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
                         <a class="myHref" href="javascript:void(0);" onclick="editActivityRemark('${activityRemark.id}','${activityRemark.noteContent}')"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
@@ -254,7 +254,9 @@
     <%--点击备注的修改按钮，弹出一个模态窗口，数据是不经过后台请求的--%>
     function editActivityRemark(activityId,activityContent) {
         //对模态窗口中的数据进行拼接
-        $('#noteContent').html(activityContent);
+        alert(activityContent);
+        $('#noteContent').html("");
+        $('#noteContent').val(activityContent);
         $('#remarkId').val(activityId);
 
         $("#editRemarkModal").modal('show');
@@ -281,9 +283,10 @@
                 //    关闭模态窗口
                     $("#editRemarkModal").modal('hide');
                 //    更新前端显示的数据
-                    $('#noteContent').html($('#noteContent').val());
+                //     $('#noteContent').html($('#noteContent').val());
                 //    修改拼接的数据的val
-                    $("#activityRemarkNote").html($('#noteContent').val());
+                    var eee = $('#remarkId').val();
+                    $("#activityRemarkNote" + eee).html($('#noteContent').val());
                 }
             }
         })
@@ -337,6 +340,40 @@
                         "                    </div>\n" +
                         "                </div>\n" +
                         "            </div>");
+
+    /*                $(".remarkDiv").on("mouseover",function () {
+                        $(this).children("div").children("div").show();
+                    });
+
+                    $(".remarkDiv").on("mouseout",function () {
+                        $(this).children("div").children("div").hide();
+
+                    });
+
+                    $(".myHref").on("mouseover",function () {
+                        $(this).children("span").css("color","red");
+                    });
+
+                    $(".myHref").on("mouseout",function () {
+                        $(this).children("span").css("color","#E6E6E6");
+                    });*/
+
+
+                    $(".remarkDiv").mouseover(function(){
+                        $(this).children("div").children("div").show();
+                    });
+
+                    $(".remarkDiv").mouseout(function(){
+                        $(this).children("div").children("div").hide();
+                    });
+
+                    $(".myHref").mouseover(function(){
+                        $(this).children("span").css("color","red");
+                    });
+
+                    $(".myHref").mouseout(function(){
+                        $(this).children("span").css("color","#E6E6E6");
+                    });
 
                     $('#remark').val("");
                 }

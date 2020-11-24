@@ -52,5 +52,6 @@ public class TestCrm {
     public void test05(){
         String sysTime = DateTimeUtil.getSysTime();
         System.out.println(sysTime.compareTo("2021-10-10 10:10:10"));
+        System.out.println(sysTime);
     }
 }
