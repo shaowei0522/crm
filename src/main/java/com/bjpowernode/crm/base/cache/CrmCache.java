@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
-import java.util.List;
+import java.util.*;
 
 /**
  * @ProjectName: crm
@@ -32,6 +32,18 @@ public class CrmCache {
 //        此处如果正常的话已经查询出来的数据词典
         servletContext.setAttribute("dictionaryType", dictionaryTypeList);
 
+//        读取state2Possibility.properties文件(包名.文件名  ！！！属性扩展名不能要)
+        ResourceBundle resourceBundle =
+                ResourceBundle.getBundle("possibility.Stage2Possibility");
+        Enumeration<String> keys = resourceBundle.getKeys();
+        Map<String,String> map = new HashMap<>();
+        while (keys.hasMoreElements()) {
+            String key = keys.nextElement();
+            String value = resourceBundle.getString(key);
+            map.put(key, value);
+
+        }
+        servletContext.setAttribute("stage2PossiblitiesMap", map);
 
     }
 }

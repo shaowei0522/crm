@@ -105,5 +105,16 @@ bug:
     还有另一种方式进行查询，利用Ajax进行异步查询，然后进行页面元素的拼接，考虑使用三个Ajax进行查询，然后进行拼接。
 
 
+    如果不设置radio的name属性而设置了value属性，那么radio特性就会失效，可以被多个都选中
+
+    输入框自动补全功能
+
+    stage2Possibilities的实现，主要是建立一个映射管理，每个stage对应一个possibility，放在配置文件中，服务器启动的时候
+    进行配置文件的读取，然后将数据封装到集合中存入servletContext中，每次切换stage的时候，向后台发送请求，获取对应的possibility，
+    然后进行文本框的赋值
+
+
+
+
 
 

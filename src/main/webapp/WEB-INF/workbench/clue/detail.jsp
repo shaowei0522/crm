@@ -33,7 +33,7 @@
 			cancelAndSaveBtnDefault = true;
 		});
 		
-		$(".remarkDiv").mouseover(function(){
+/*		$(".remarkDiv").mouseover(function(){
 			$(this).children("div").children("div").show();
 		});
 		
@@ -46,6 +46,21 @@
 		});
 		
 		$(".myHref").mouseout(function(){
+			$(this).children("span").css("color","#E6E6E6");
+		});*/
+
+		//参数1:事件对象,参数2:被代理的元素的选择器,参数3:事件触发的函数
+		$('#father').on('mouseover','.remarkDiv',function () {
+			$(this).children("div").children("div").show();
+		});
+
+		$('#father').on('mouseout','.remarkDiv',function () {
+			$(this).children("div").children("div").hide();
+		});
+		$('#father').on('mouseover','.myHref',function () {
+			$(this).children("span").css("color","red");
+		});
+		$('#father').on('mouseout','.myHref',function () {
 			$(this).children("span").css("color","#E6E6E6");
 		});
 	});
@@ -69,7 +84,7 @@
 					<div class="btn-group" style="position: relative; top: 18%; left: 8px;">
 						<form class="form-inline" role="form">
 						  <div class="form-group has-feedback">
-						    <input type="text" class="form-control" style="width: 300px;" placeholder="请输入市场活动名称，支持模糊查询">
+						    <input type="text" id="queryActivity" class="form-control" style="width: 300px;" placeholder="请输入市场活动名称，支持模糊查询">
 						    <span class="glyphicon glyphicon-search form-control-feedback"></span>
 						  </div>
 						</form>
@@ -77,7 +92,7 @@
 					<table id="activityTable" class="table table-hover" style="width: 900px; position: relative;top: 10px;">
 						<thead>
 							<tr style="color: #B3B3B3;">
-								<td><input type="checkbox"/></td>
+								<td><input type="checkbox" class="father"/></td>
 								<td>名称</td>
 								<td>开始日期</td>
 								<td>结束日期</td>
@@ -85,27 +100,13 @@
 								<td></td>
 							</tr>
 						</thead>
-						<tbody>
-							<tr>
-								<td><input type="checkbox"/></td>
-								<td>发传单</td>
-								<td>2020-10-10</td>
-								<td>2020-10-20</td>
-								<td>zhangsan</td>
-							</tr>
-							<tr>
-								<td><input type="checkbox"/></td>
-								<td>发传单</td>
-								<td>2020-10-10</td>
-								<td>2020-10-20</td>
-								<td>zhangsan</td>
-							</tr>
+						<tbody id="activityBody">
 						</tbody>
 					</table>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">关联</button>
+					<button type="button" class="btn btn-default" onclick="dismissModal()">取消</button>
+					<button type="button" class="btn btn-primary" onclick="addClueActivityRelation()">关联</button>
 				</div>
 			</div>
 		</div>
@@ -278,7 +279,7 @@
 			<h3>${clue.fullname}${clue.appellation} <small>${clue.company}</small></h3>
 		</div>
 		<div style="position: relative; height: 50px; width: 500px;  top: -72px; left: 700px;">
-			<button type="button" class="btn btn-default" onclick="window.location.href='convert.html';"><span class="glyphicon glyphicon-retweet"></span> 转换</button>
+			<button type="button" class="btn btn-default" onclick="window.location.href='/crm/workbench/clue/toConvertView?clueId=${clue.id}';"><span class="glyphicon glyphicon-retweet"></span> 转换</button>
 			<button type="button" class="btn btn-default" data-toggle="modal" data-target="#editClueModal"><span class="glyphicon glyphicon-edit"></span> 编辑</button>
 			<button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 		</div>
@@ -371,7 +372,7 @@
 	</div>
 	
 	<!-- 备注 -->
-	<div style="position: relative; top: 40px; left: 40px;">
+	<div id="father" style="position: relative; top: 40px; left: 40px;">
 		<div class="page-header">
 			<h4>备注</h4>
 		</div>
@@ -390,6 +391,7 @@
 				</div>
 			</div>
 		</c:forEach>
+		<div id="clueRemarkEnd"></div>
 
 
 		<div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
@@ -397,7 +399,7 @@
 				<textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="添加备注..."></textarea>
 				<p id="cancelAndSaveBtn" style="position: relative;left: 737px; top: 10px; display: none;">
 					<button id="cancelBtn" type="button" class="btn btn-default">取消</button>
-					<button type="button" class="btn btn-primary">保存</button>
+					<button type="button" class="btn btn-primary" onclick="addClueRemark()">保存</button>
 				</p>
 			</form>
 		</div>
@@ -420,14 +422,14 @@
 							<td></td>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody id="activityBodyOut">
 					<c:forEach items="${clue.activityList}" var="activity">
-						<tr>
+						<tr id="${activity.id}">
 							<td>${activity.name}</td>
 							<td>${activity.startDate}</td>
 							<td>${activity.endDate}</td>
 							<td>${activity.owner}</td>
-							<td><a href="javascript:void(0);"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>
+							<td><a href="javascript:void(0);" onclick="deleteBind('${activity.id}')"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>
 						</tr>
 					</c:forEach>
 
@@ -436,7 +438,7 @@
 			</div>
 			
 			<div>
-				<a href="javascript:void(0);" data-toggle="modal" data-target="#bundModal" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>关联市场活动</a>
+				<a href="javascript:void(0);" onclick="addActivityRelation()" data-toggle="modal" data-target="#bundModal" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>关联市场活动</a>
 			</div>
 		</div>
 	</div>
@@ -447,7 +449,7 @@
 		<div class="modal-dialog" role="document" style="width: 80%;">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">
+					<button type="button" class="close" onclick="dismissModal()">
 						<span aria-hidden="true">×</span>
 					</button>
 					<h4 class="modal-title">修改线索备注</h4>
@@ -502,11 +504,8 @@
 		})
 	}
 
-
-
 	/*点击clueRemark的删除按钮进行删除*/
 	function deleteClueRemark(id) {
-		alert(id);
 		$.ajax({
 			url:"/crm/workbench/clue/deleteClueRemark",
 			data:{
@@ -527,6 +526,203 @@
 	 *  此处涉及到了添加备注之后编辑与删除按钮的js失效的问题，
 	 * 需要用到事件委托机制进行父类事件委托，也可以再写一遍js代码在动态生成之后的html元素后面
 	* */
+	function addClueRemark() {
+		var val = $('#remark').val();
+		/*$.ajax({
+			url:"/crm/workbench/clue/addClueRemark",
+			dataType:"json",
+			data:{
+				'noteContent':val
+			},
+			type:"get",
+			success:function (data) {
+
+			}
+		})*/
+		$.get(
+				"/crm/workbench/clue/addClueRemark",
+				{'noteContent':val,
+				 'clueId':'${clue.id}'},
+				function (data) {
+					console.log(data);
+					alert(data.msg);
+					if (data.oK) {
+						$('#remark').val("");
+						var reg = new RegExp( '/','g');
+						var time = new Date().toLocaleDateString().replace(reg,"-");
+						$('#clueRemarkEnd').append("<div class=\"remarkDiv\" id=\""+data.object.id+"\" style=\"height: 60px;\">\n" +
+								"\t\t\t\t<img title=\"zhangsan\" src=\"/crm/image/user-thumbnail.png\" style=\"width: 30px; height:30px;\">\n" +
+								"\t\t\t\t<div style=\"position: relative; top: -40px; left: 40px;\" >\n" +
+								"\t\t\t\t\t<h5 id=\"h5"+data.object.id+"\">"+val+"</h5>\n" +
+								"\t\t\t\t\t<font color=\"gray\">线索</font> <font color=\"gray\">-</font> <b>${clue.fullname}-${clue.appellation}</b> <small style=\"color: gray;\"> "+data.object.createTime+" 由"+data.object.createBy+"</small>\n" +
+								"\t\t\t\t\t<div style=\"position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;\">\n" +
+								"\t\t\t\t\t\t<a class=\"myHref\" href=\"javascript:void(0);\" onclick=\"toUpdateModal($('#h5"+data.object.id+"').html(),'"+data.object.id+"')\" data-toggle=\"modal\" data-target=\"#updateClueRemark\"><span class=\"glyphicon glyphicon-edit\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>\n" +
+								"\t\t\t\t\t\t&nbsp;&nbsp;&nbsp;&nbsp;\n" +
+								"\t\t\t\t\t\t<a class=\"myHref\" href=\"javascript:void(0);\" onclick=\"deleteClueRemark('"+data.object.id+"')\"><span class=\"glyphicon glyphicon-remove\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>\n" +
+								"\t\t\t\t\t</div>\n" +
+								"\t\t\t\t</div>\n" +
+								"\t\t\t</div>");
+					}
+				},
+				"json"
+	)
+	}
+
+	/**
+	 * 解除市场活动的关联
+	 * */
+	function deleteBind(id) {
+		$.ajax({
+			url:"/crm/workbench/clue/deleteBindActivity",
+			dataType:"json",
+			data:{
+				"activityId":id
+			},
+			type:"get",
+			success: function (data) {
+				alert(data.msg);
+				if (data.oK) {
+					$("#" + id + "").remove();
+				}
+			}
+		})
+	}
+	/**
+	 * 关联市场活动，此处需要查询未被关联的市场活动
+	 * 即对已经被关联的市场活动进行SQL排除
+	 * */
+	function addActivityRelation() {
+		$.ajax({
+			url:"/crm/workbench/clue/selectActivitiesUnbind",
+			dataType:"json",
+			data:{
+				"clueId":"${clue.id}"
+			},
+			type:"get",
+			success:function (data) {
+				console.log(data);
+				for (var i = 0; i < data.length; i++) {
+					$('#activityBody').append("<tr>\n" +
+							"\t\t\t\t\t\t\t\t<td><input type=\"checkbox\" class='son' value='"+data[i].id+"'/></td>\n" +
+							"\t\t\t\t\t\t\t\t<td>"+data[i].name+"</td>\n" +
+							"\t\t\t\t\t\t\t\t<td>"+data[i].startDate+"</td>\n" +
+							"\t\t\t\t\t\t\t\t<td>"+data[i].endDate+"</td>\n" +
+							"\t\t\t\t\t\t\t\t<td>"+data[i].owner+"</td>\n" +
+							"\t\t\t\t\t\t\t</tr>");
+				}
+			}
+		})
+	}
+
+	/**
+	 * 对市场活动进行筛选查询，此处使用keyBoard事件进行请求，即用户按下回车键后进行查询
+	 * 需要return false 阻止关闭模态窗口
+	 * */
+	$("#queryActivity").keypress(function (event) {
+		if (event.keyCode == 13) {
+		//	此处模糊查询市场活动
+			$.ajax({
+				url:"/crm/workbench/clue/selectActivitiesUnbind",
+				dataType:"json",
+				data:{
+					"name":$("#queryActivity").val(),
+					"clueId":"${clue.id}"
+				},
+				type:"get",
+				success:function (data) {
+					$('#activityBody').empty();
+					for (var i = 0; i < data.length; i++) {
+						$('#activityBody').append("<tr>\n" +
+								"\t\t\t\t\t\t\t\t<td><input type=\"checkbox\" class='son' value='"+data[i].id+"'/></td>\n" +
+								"\t\t\t\t\t\t\t\t<td>"+data[i].name+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td>"+data[i].startDate+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td>"+data[i].endDate+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td>"+data[i].owner+"</td>\n" +
+								"\t\t\t\t\t\t\t</tr>");
+					}
+				}
+			})
+
+		}
+		return false;
+	});
+	/**
+	 * 关闭模态窗口之后一定要进行清除输入框中的内容
+	 * */
+	function dismissModal (){
+		$("#queryActivity").val("");
+		$('#activityBody').empty();
+		$('#bundModal').modal("hide");
+	}
+	/**
+	 * 关联市场活动，本质上就是添加市场活动与线索之间的关系
+	 * */
+	function addClueActivityRelation() {
+		var array = [];
+		$(".son").each(function () {
+			if ($(this).prop("checked")) {
+				array.push($(this).val());
+			}
+		});
+		$.ajax({
+			url:"/crm/workbench/clue/addClueActivityRelation",
+			dataType:"json",
+			data:{
+				"ids": array.join(","),
+				"clueId":'${clue.id}'
+			},
+			type:"get",
+			success: function (data) {
+				alert(data.msg);
+				if (data.oK) {
+					dismissModal();
+					$.ajax({
+						url:"/crm/workbench/clue/queryAllClueActivities",
+						data:{
+							"clueId":'${clue.id}'
+						},
+						dataType:"json",
+						type:"get",
+						success:function (data) {
+							console.log(data);
+							$('#activityBodyOut').empty();
+							for (var i = 0; i < data.length; i++) {
+								$('#activityBodyOut').append("<tr id=\""+data[i].id+"\">\n" +
+										"\t\t\t\t\t\t\t\t\t<td>"+data[i].name+"</td>\n" +
+										"\t\t\t\t\t\t\t\t\t<td>"+data[i].startDate+"</td>\n" +
+										"\t\t\t\t\t\t\t\t\t<td>"+data[i].endDate+"</td>\n" +
+										"\t\t\t\t\t\t\t\t\t<td>"+data[i].owner+"</td>\n" +
+										"\t\t\t\t\t\t\t\t\t<td><a href=\"javascript:void(0);\" onclick=\"deleteBind('"+data[i].id+"')\"  style=\"text-decoration: none;\"><span class=\"glyphicon glyphicon-remove\"></span>解除关联</a></td>\n" +
+										"\t\t\t\t\t\t\t</tr>");
+							}
+						}
+					})
+				}
+			}
+		})
+	}
+
+	//全选与全不选
+	$(".father").click(function () {
+		$(".son").prop("checked",$(this).prop('checked'));
+	});
+
+	/**
+	 * 此处无法执行方法
+	 * */
+	$(".son").each(function(){
+		alert(111);
+		$(this).on("click",function () {
+				var length = $(".son").length;
+				//表单对象属性过滤
+				var checkedLeng = $(".son:checked").length;
+				if (checkedLeng == length) {
+					$(".father").prop("checked", true);
+				} else {
+					$(".father").prop("checked", false);
+				}
+		})
+	});
 
 </script>
 </html>

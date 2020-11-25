@@ -2,9 +2,9 @@ package com.bjpowernode.crm.workbench.controller;
 
 import com.bjpowernode.crm.base.bean.ResultVo;
 import com.bjpowernode.crm.base.constants.CrmConstants;
+import com.bjpowernode.crm.base.util.DateTimeUtil;
 import com.bjpowernode.crm.settings.bean.User;
-import com.bjpowernode.crm.workbench.bean.Clue;
-import com.bjpowernode.crm.workbench.bean.ClueRemark;
+import com.bjpowernode.crm.workbench.bean.*;
 import com.bjpowernode.crm.workbench.service.ClueService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -105,6 +105,111 @@ public class ClueController {
             clueService.updateClueRemark(clueRemark);
             resultVo.setOK(true);
             resultVo.setMsg("修改备注信息成功！");
+        } catch (Exception e) {
+            resultVo.setMsg(e.getMessage());
+        }
+        return resultVo;
+    }
+    /**
+     * 添加备注信息
+     * */
+    @RequestMapping("workbench/clue/addClueRemark")
+    @ResponseBody
+    public ResultVo addClueRemark(@RequestParam("noteContent") String content,
+                                  String clueId,HttpSession httpSession){
+        ClueRemark clueRemark = new ClueRemark();
+        clueRemark.setCreateBy(((User)httpSession.getAttribute(CrmConstants.LOGIN_USER)).getName());
+        clueRemark.setClueId(clueId);
+        clueRemark.setNoteContent(content);
+        ResultVo resultVo = new ResultVo();
+        try {
+            clueRemark = clueService.addClueRemark(clueRemark);
+            resultVo.setOK(true);
+            resultVo.setMsg("添加备注信息成功！");
+            resultVo.setObject(clueRemark);
+        } catch (Exception e) {
+            resultVo.setMsg(e.getMessage());
+        }
+        return resultVo;
+    }
+
+    /**
+     * 解除线索关联的市场活动
+     * */
+    @RequestMapping("workbench/clue/deleteBindActivity")
+    @ResponseBody
+    public ResultVo deleteBindActivity(ClueActivityRelation clueActivityRelation){
+        ResultVo resultVo = new ResultVo();
+        try {
+            clueService.deleteBindActivity(clueActivityRelation);
+            resultVo.setMsg("解除关联成功");
+            resultVo.setOK(true);
+        } catch (Exception e) {
+            resultVo.setMsg(e.getMessage());
+        }
+        return resultVo;
+    }
+
+    /**
+     * 关联市场活动----弹出模态窗口，显示未被关联的市场活动，支持模糊查询
+     * */
+    @RequestMapping("workbench/clue/selectActivitiesUnbind")
+    @ResponseBody
+    public List<Activity> selectActivitiesUnbind(ClueActivityRelation clueActivityRelation,
+                                                 @RequestParam(required = false) String name){
+        List<Activity> activityList = clueService.selectActivitiesUnbind(clueActivityRelation,name);
+        return activityList;
+    }
+    //线索转换发生交易查询当前线索下的所有市场活动
+    @RequestMapping("workbench/clue/selectActivitiesByClueId")
+    @ResponseBody
+    public List<Activity> selectActivitiesByClueId(String clueId,String name){
+        List<Activity> activityList = clueService.selectActivitiesByClueId(clueId, name);
+        return activityList;
+    }
+
+    /**
+     * 关联市场活动----进行线索与市场活动的关联
+     * */
+    @RequestMapping("workbench/clue/addClueActivityRelation")
+    @ResponseBody
+    public ResultVo addClueActivityRelation(@RequestParam("ids") String ids,
+                                            @RequestParam("clueId") String clueId){
+        ResultVo resultVo = new ResultVo();
+        try {
+            clueService.addClueActivityRelation(ids,clueId);
+            resultVo.setMsg("关联市场活动与线索成功！");
+            resultVo.setOK(true);
+        } catch (Exception e) {
+            resultVo.setMsg(e.getMessage());
+
+        }
+        return resultVo;
+    }
+
+    @RequestMapping("workbench/clue/queryAllClueActivities")
+    @ResponseBody
+    public List<Activity> queryAllClueActivities(String clueId){
+        List<Activity> activities = clueService.queryAllClueActivities(clueId);
+        return activities;
+    }
+
+    @RequestMapping("workbench/clue/toConvertView")
+    public String toConvertView(String clueId,HttpSession httpSession){
+        Clue clue = clueService.queryClueByPrimaryKey(clueId);
+        httpSession.setAttribute("clue", clue);
+        return "clue/convert";
+    }
+    @RequestMapping("workbench/clue/convert")
+    @ResponseBody
+    public ResultVo covert(String isCreateTransaction,Transaction transaction,String clueId, HttpSession httpSession){
+        User user = (User) httpSession.getAttribute(CrmConstants.LOGIN_USER);
+        String username = user.getName();
+        ResultVo resultVo = new ResultVo();
+        try {
+            clueService.saveConvert(clueId,username,transaction,isCreateTransaction);
+            resultVo.setMsg("转换线索成功！");
+            resultVo.setOK(true);
         } catch (Exception e) {
             resultVo.setMsg(e.getMessage());
         }

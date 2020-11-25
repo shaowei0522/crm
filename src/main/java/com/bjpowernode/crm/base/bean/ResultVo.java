@@ -17,12 +17,23 @@ public class ResultVo {
 
     private String msg;
 
+    private Object object;
+
     @Override
     public String toString() {
         return "ResultVo{" +
                 "isOK=" + isOK +
                 ", msg='" + msg + '\'' +
+                ", object=" + object +
                 '}';
+    }
+
+    public Object getObject() {
+        return object;
+    }
+
+    public void setObject(Object object) {
+        this.object = object;
     }
 
     public boolean isOK() {

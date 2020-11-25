@@ -24,7 +24,20 @@ public enum ExceptionEnum {
     ACTIVITY_ALL_DELETE("002","删除市场活动以及备注失败"),
     CLUE_ADD("003","添加线索失败"),
     CLUE_REMARK_DELETE("003","删除线索备注失败"),
-    CLUE_REMARK_UPDATE("003","修改线索备注失败");
+    CLUE_REMARK_ADD("003","添加线索备注失败"),
+    CLUE_REMARK_UPDATE("003","修改线索备注失败"),
+    CLUE_ACTIVITY_RELATION_DELETE("003","解除市场活动关联失败"),
+    CLUE_ACTIVITY_RELATION_ADD("003","添加市场活动关联失败"),
+    CUSTOMER_ADD("004","添加客户失败"),
+    CONTACT_ADD("005","添加联系人失败"),
+    CONTACT_REMARK_ADD("006","添加联系人备注失败"),
+    CUSTOMER_REMARK_ADD("007","添加客户备注失败"),
+    CLUE_CONVERT("008","线索转换失败");
+
+
+
+
+
 
     ExceptionEnum(String code, String msg) {
         this.code = code;
